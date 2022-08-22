@@ -62,6 +62,9 @@ pipeline {
         }
 
         stage('Test case execution') {
+            when {
+                branch "master"
+            }
             steps {				  
                   echo "Test case execution"
                   bat 'dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover -l:trx;LogFileName=nagp-devops-us.xml'	      
@@ -69,7 +72,7 @@ pipeline {
         }
 
 		stage('Stop sonarqube analysis'){
-             when {
+            when {
                 branch "master"
             }
             
@@ -106,19 +109,19 @@ pipeline {
             }
         }
 
-        stage ("Push to Docker") {
-            when{
-                expression {false}
-            }
-            steps {
-                echo "Push to Docker step"
-                    //bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}/i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
-                    bat "docker tag i-${userName}-${BRANCH_NAME}:latest ${registry}/i-${userName}-${BRANCH_NAME}:latest"
+        // stage ("Push to Docker") {
+        //     when{
+        //         expression {false}
+        //     }
+        //     steps {
+        //         echo "Push to Docker step"
+        //             //bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}/i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
+        //             bat "docker tag i-${userName}-${BRANCH_NAME}:latest ${registry}/i-${userName}-${BRANCH_NAME}:latest"
 
-                //bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
-                bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:latest"
-            }
-        }        
+        //         //bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
+        //         bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:latest"
+        //     }
+        // }        
 
         stage('Kubernetes Deployment') {
             steps{
