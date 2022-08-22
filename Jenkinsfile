@@ -106,52 +106,21 @@ pipeline {
             }
         }
 
-        stage ("Containers") {
-            failFast true
-            parallel {
-                stage ("PrecontainerCheck") {
-                    steps {
-                        echo "PrecontainerCheck step"
-                        script {
-						
-							if (env.BRANCH_NAME == 'master') {
-                                env.port = 7200
-                            } else {
-                                env.port = 7300
-                            }
-						
-							env.containerId = bat(script: "docker ps -a -f publish=${port} -q", returnStdout: true).trim().readLines().drop(1).join('')
-                            if (env.containerId != '') {
-                                echo "Stopping and removing container running on ${port}"
-                                bat "docker stop $env.containerId"
-                                bat "docker rm $env.containerId"
-                            } else {
-                                echo "No container running on ${port} port."
-                            }
-                        }
-                    }
-                }
+        stage ("Push to Docker") {
+            when{
+                expression {false}
+            }
+            steps {
+                echo "Push to Docker step"
+                    //bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}/i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
+                    bat "docker tag i-${userName}-${BRANCH_NAME}:latest ${registry}/i-${userName}-${BRANCH_NAME}:latest"
 
-                stage ("Push to Docker") {
-                    when{
-                        expression {false}
-                    }
-                    steps {
-                        echo "Push to Docker step"
-                         bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
-                         bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:i-${userName}-${BRANCH_NAME}:latest"
-
-                        bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
-                        bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:latest"
-                    }
-                }
+                //bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
+                bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:latest"
             }
         }        
 
         stage('Kubernetes Deployment') {
-            when{
-                expression {false}
-            }
             steps{
                 bat "kubectl apply -f deployment.yaml"
 		    }
