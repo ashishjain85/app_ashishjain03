@@ -3,7 +3,7 @@ pipeline {
 		
 	environment {
 		scannerHome = tool name: 'sonar_scanner_dotnet'
-		registry = 'ashishjai85/nagp-devops-us-dotnet'
+		registry = 'ashishjain85/nagp-devops-us-dotnet'
 		username = 'ashishjain03'
         appName = 'nagp-devops-us-dotnet'
    	}	
