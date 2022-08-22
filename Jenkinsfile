@@ -25,7 +25,7 @@ pipeline {
     
     stages {
         
-    	stage ("nuget restore") {
+    	stage ("Nuget restore") {
             steps {
 		    
                 //Initial message
@@ -101,7 +101,7 @@ pipeline {
                     }
                 }
                 echo "Docker Image step"
-                bat "docker build -t i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
+                //bat "docker build -t i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
                 bat "docker build -t i-${userName}-${BRANCH_NAME}:latest --no-cache -f Dockerfile ."
             }
         }
@@ -148,11 +148,14 @@ pipeline {
             }
         }        
 
-        // stage('Kubernetes Deployment') {
-		 // steps{
-		     // bat "kubectl apply -f deployment.yaml"
-		 // }
-		//}
+        stage('Kubernetes Deployment') {
+            when{
+                expression {false}
+            }
+            steps{
+                bat "kubectl apply -f deployment.yaml"
+		    }
+		}
    	 }
 
 	 post { 
