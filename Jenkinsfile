@@ -131,9 +131,12 @@ pipeline {
                     }
                 }
 
-                stage ("PushtoDTR") {
+                stage ("Push to Docker") {
+                    when{
+                        false
+                    }
                     steps {
-                        echo "PushtoDTR step"
+                        echo "Push to Docker step"
                          bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:i-${userName}-${BRANCH_NAME}-${BUILD_NUMBER}"
                          bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:i-${userName}-${BRANCH_NAME}-latest"
 
