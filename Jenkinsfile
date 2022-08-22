@@ -3,7 +3,7 @@ pipeline {
 		
 	environment {
 		scannerHome = tool name: 'sonar_scanner_dotnet'
-		registry = 'ashishjai85/nagp-devops-us-dotnet'
+		registry = 'ashishjain85/nagp-devops-us-dotnet'
 		username = 'ashishjain03'
         appName = 'nagp-devops-us-dotnet'
    	}	
@@ -25,7 +25,7 @@ pipeline {
     
     stages {
         
-    	stage ("nuget restore") {
+    	stage ("Nuget restore") {
             steps {
 		    
                 //Initial message
@@ -101,7 +101,8 @@ pipeline {
                     }
                 }
                 echo "Docker Image step"
-                bat "docker build -t i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
+                //bat "docker build -t i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
+                bat "docker build -t i-${userName}-${BRANCH_NAME}:latest --no-cache -f Dockerfile ."
             }
         }
 
@@ -131,31 +132,30 @@ pipeline {
                     }
                 }
 
-                stage ("PushtoDTR") {
+                stage ("Push to Docker") {
+                    when{
+                        expression {false}
+                    }
                     steps {
-                        echo "PushtoDTR step"
-                         bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:i-${userName}-${BRANCH_NAME}-${BUILD_NUMBER}"
-                         bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:i-${userName}-${BRANCH_NAME}-latest"
+                        echo "Push to Docker step"
+                         bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
+                         bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:i-${userName}-${BRANCH_NAME}:latest"
 
-                        bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}-${BUILD_NUMBER}"
-                        bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}-latest"
+                        bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
+                        bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:latest"
                     }
                 }
             }
-        }
+        }        
 
-        stage ("Docker deployment") {
-            steps {
-                echo "Docker deployment step"
-                bat "docker run --name c-${userName}-${BRANCH_NAME} -d -p ${port}:80 ${registry}:i-${userName}-${BRANCH_NAME}-latest"
+        stage('Kubernetes Deployment') {
+            when{
+                expression {false}
             }
-        }
-
-        // stage('Kubernetes Deployment') {
-		 // steps{
-		     // bat "kubectl apply -f deployment.yaml"
-		 // }
-		//}
+            steps{
+                bat "kubectl apply -f deployment.yaml"
+		    }
+		}
    	 }
 
 	 post { 
