@@ -102,6 +102,7 @@ pipeline {
                 }
                 echo "Docker Image step"
                 bat "docker build -t i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
+                bat "docker build -t i-${userName}-${BRANCH_NAME}:latest --no-cache -f Dockerfile ."
             }
         }
 
@@ -137,11 +138,11 @@ pipeline {
                     }
                     steps {
                         echo "Push to Docker step"
-                         bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:i-${userName}-${BRANCH_NAME}-${BUILD_NUMBER}"
-                         bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:i-${userName}-${BRANCH_NAME}-latest"
+                         bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
+                         bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:i-${userName}-${BRANCH_NAME}:latest"
 
-                        bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}-${BUILD_NUMBER}"
-                        bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}-latest"
+                        bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
+                        bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:latest"
                     }
                 }
             }
