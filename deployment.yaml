@@ -1,39 +1,53 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dotnet-app-deployment-master
+  name: dotnet-app-deployment-feature
   namespace: kubernetes-cluster-ashishjain03
   labels:
-    app: dotnet-app-master
+    app: dotnet-app-feature
 spec:
   replicas: 4
   selector:
     matchLabels:
-      app: dotnet-app-master
+      app: dotnet-app-feature
   template:
     metadata:
       labels:
-        app: dotnet-app-master
+        app: dotnet-app-feature
     spec:
       containers:
-        - name: dotnet-app-master
-          image: ashishjain03/nagp-devops-us-dotnet:i-ashishjain03-master-latest
+        - name: dotnet-app-feature
+          image: ashishjain85/i-ashishjain03-master:latest
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
+          envFrom:
+          - configMapRef:
+              name: app-settings
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: dotnet-app-master
+  name: dotnet-app-feature
   namespace: kubernetes-cluster-ashishjain03
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector: 
-    app: dotnet-app-master
+    app: dotnet-app-feature
   ports:    
   - protocol: TCP
-    nodePort: 30157
     port: 80
     targetPort: 80
+---
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "app-settings"
+  namespace: kubernetes-cluster-ashishjain03
+  labels:
+    app: "app-settings"
+data:
+  API_URL: "http://www.google.com"
+  ENVIRONMENT: "dev"
+  LANGUAGE: "English"
