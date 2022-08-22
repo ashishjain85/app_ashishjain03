@@ -133,7 +133,7 @@ pipeline {
 
                 stage ("Push to Docker") {
                     when{
-                        false
+                        expression {false}
                     }
                     steps {
                         echo "Push to Docker step"
