@@ -111,6 +111,7 @@ pipeline {
                 //bat "docker push ${registry}/i-${userName}-${BRANCH_NAME}:latest"
 
                 echo "Execute kubectl"
+                bat "gcloud auth login"
                 bat "kubectl apply -f deployment.yaml"
 		    }
 		}
