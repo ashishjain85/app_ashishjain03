@@ -108,7 +108,7 @@ pipeline {
 
                 echo "Push to Docker"
                 bat "docker tag i-${userName}-${BRANCH_NAME}:latest ${registry}/i-${userName}-${BRANCH_NAME}:latest"
-                bat "docker push ${registry}/i-${userName}-${BRANCH_NAME}:latest"
+                //bat "docker push ${registry}/i-${userName}-${BRANCH_NAME}:latest"
 
                 echo "Execute kubectl"
                 bat "kubectl apply -f deployment.yaml"
