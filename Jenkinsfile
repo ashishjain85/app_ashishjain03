@@ -112,6 +112,7 @@ pipeline {
 
                 echo "Execute kubectl"
                 bat "gcloud auth login"
+                bat "gcloud container clusters get-credentials cluster-1 --zone us-east1-b"
                 bat "kubectl apply -f deployment.yaml"
 		    }
 		}
