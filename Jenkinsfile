@@ -95,36 +95,22 @@ pipeline {
             }
         }
 
-        // stage ("Docker Image") {
-        //     steps {
-        //         //For master branch, publish before creating docker image
-        //         script {
-        //             if (BRANCH_NAME == "master") {
-        //                 bat "dotnet publish -c Release -o ${appName}/app/${userName}"
-        //             }
-        //         }
-        //         echo "Docker Image step"
-        //         //bat "docker build -t i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
-        //         bat "docker build -t i-${userName}-${BRANCH_NAME}:latest --no-cache -f Dockerfile ."
-        //     }
-        // }
-
-        // stage ("Push to Docker") {
-        //     when{
-        //         expression {false}
-        //     }
-        //     steps {
-        //         echo "Push to Docker step"
-        //             //bat "docker tag i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}/i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
-        //             bat "docker tag i-${userName}-${BRANCH_NAME}:latest ${registry}/i-${userName}-${BRANCH_NAME}:latest"
-
-        //         //bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER}"
-        //         bat "docker push ${registry}:i-${userName}-${BRANCH_NAME}:latest"
-        //     }
-        // }        
-
         stage('Kubernetes Deployment') {
             steps{
+                //For master branch, publish before creating docker image
+                script {
+                    if (BRANCH_NAME == "master") {
+                        bat "dotnet publish -c Release -o ${appName}/app/${userName}"
+                    }
+                }
+                echo "Docker Image"
+                bat "docker build -t i-${userName}-${BRANCH_NAME}:latest --no-cache -f Dockerfile ."
+
+                echo "Push to Docker"
+                bat "docker tag i-${userName}-${BRANCH_NAME}:latest ${registry}/i-${userName}-${BRANCH_NAME}:latest"
+                bat "docker push ${registry}/i-${userName}-${BRANCH_NAME}:latest"
+
+                echo "Execute kubectl"
                 bat "kubectl apply -f deployment.yaml"
 		    }
 		}
