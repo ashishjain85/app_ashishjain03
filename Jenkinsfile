@@ -95,19 +95,19 @@ pipeline {
             }
         }
 
-        stage ("Docker Image") {
-            steps {
-                //For master branch, publish before creating docker image
-                script {
-                    if (BRANCH_NAME == "master") {
-                        bat "dotnet publish -c Release -o ${appName}/app/${userName}"
-                    }
-                }
-                echo "Docker Image step"
-                //bat "docker build -t i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
-                bat "docker build -t i-${userName}-${BRANCH_NAME}:latest --no-cache -f Dockerfile ."
-            }
-        }
+        // stage ("Docker Image") {
+        //     steps {
+        //         //For master branch, publish before creating docker image
+        //         script {
+        //             if (BRANCH_NAME == "master") {
+        //                 bat "dotnet publish -c Release -o ${appName}/app/${userName}"
+        //             }
+        //         }
+        //         echo "Docker Image step"
+        //         //bat "docker build -t i-${userName}-${BRANCH_NAME}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
+        //         bat "docker build -t i-${userName}-${BRANCH_NAME}:latest --no-cache -f Dockerfile ."
+        //     }
+        // }
 
         // stage ("Push to Docker") {
         //     when{
