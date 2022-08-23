@@ -51,3 +51,14 @@ data:
   API_URL: "http://www.google.com"
   ENVIRONMENT: "dev"
   LANGUAGE: "English"
+---
+apiVersion: v1
+kind : Secret
+metadata:
+  name: credentials
+  namespace: kubernetes-cluster-ashishjain03
+data:
+  username: YXNoaXNoamFpbjAz
+  password: cGFzc3dvcmQ=
+type: Opaque
+---
